@@ -287,21 +287,27 @@ namespace ManeuverForVRSL.Editor
                 return null;
             }
 
-            var uploadTimeline = Object.Instantiate(sourceTimeline);
+            var uploadTimeline = ScriptableObject.CreateInstance<TimelineAsset>();
             uploadTimeline.name = $"{sourceTimeline.name}_MfvUpload";
-            var tracksToDelete = uploadTimeline.GetOutputTracks()
-                .Concat(uploadTimeline.GetRootTracks())
-                .Distinct()
-                .Where(track => track is StageLightTimelineTrack)
-                .ToList();
-
-            foreach (var track in tracksToDelete)
-            {
-                uploadTimeline.DeleteTrack(track);
-            }
-
             var path = AssetDatabase.GenerateUniqueAssetPath($"{outputFolder}/{SanitizeAssetName(uploadTimeline.name)}.playable");
             AssetDatabase.CreateAsset(uploadTimeline, path);
+            uploadTimeline.durationMode = sourceTimeline.durationMode;
+            uploadTimeline.fixedDuration = sourceTimeline.fixedDuration;
+
+            foreach (var sourceTrack in sourceTimeline.GetRootTracks().Where(track => !(track is StageLightTimelineTrack)))
+            {
+                try
+                {
+                    uploadTimeline.CreateTrack(sourceTrack.GetType(), null, sourceTrack.name);
+                }
+                catch (System.Exception exception)
+                {
+                    Debug.LogWarning($"Skipped copying upload timeline track '{sourceTrack.name}' ({sourceTrack.GetType().Name}): {exception.Message}");
+                }
+            }
+
+            EditorUtility.SetDirty(uploadTimeline);
+            AssetDatabase.SaveAssets();
             return uploadTimeline;
         }
 

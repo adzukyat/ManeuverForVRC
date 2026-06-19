@@ -110,7 +110,7 @@ The baker will:
 - sample SLM lighting at 120Hz internally
 - simplify continuous curves with tolerance-based key reduction
 - save a `MfvBakedShowAsset`
-- create an upload Timeline copy with SLM tracks removed
+- create an upload Timeline variant with SLM tracks removed
 - keep `ActivationTrack` and `AnimationTrack`
 - create or update a child `MfvVRSLTimelinePlayer`
 - copy flattened runtime arrays into the player
@@ -155,13 +155,44 @@ If unsupported Timeline tracks or unsupported SLM channels are found during bake
 
 ## Validation
 
-The package includes EditMode tests covering:
+This repository stays as a UPM package at the root. `TestProject~` is the committed Unity test harness and references this package with `file:../..`.
 
-- key reduction behavior
-- SLM-to-VRSL value mapping
-- deterministic flicker evaluation
-- runtime interpolation and seek-back behavior
-- gobo event playback
-- Timeline validation for supported and unsupported tracks
+### Local CLI
 
-Run the tests from Unity Test Runner with the `ManeuverForVRSL.EditorTests` assembly.
+Run the committed test harness with the local Unity Editor:
+
+```sh
+scripts/bootstrap-test-project.sh
+scripts/test-editmode.sh
+```
+
+The script defaults to `TestProject~` and Unity `2022.3.22f1` installed by Unity Hub. If Unity is installed elsewhere, set `UNITY_EXECUTABLE`:
+
+```sh
+UNITY_EXECUTABLE="/Applications/Unity/Hub/Editor/2022.3.22f1/Unity.app/Contents/MacOS/Unity" scripts/test-editmode.sh
+```
+
+Results are written to:
+
+- `TestResults/editmode-results.xml`
+- `TestResults/editor.log`
+
+### Unity Hub
+
+For manual inspection:
+
+1. Run `scripts/bootstrap-test-project.sh` once to download the VRC/VRSL/AudioLink packages used by the harness.
+2. Open `TestProject~` in Unity `2022.3.22f1`.
+3. Open `Assets/MfvTestFixtures/PreviewSmoke.unity`.
+4. Scrub or play `Assets/MfvTestFixtures/PreviewSmoke.playable` and confirm the VRSL fixture fields change.
+
+If the fixture assets need to be rebuilt, use `ManeuverForVRSL > Tests > Regenerate Preview Smoke Fixture`.
+
+### Test Levels
+
+- Level 1 pure unit: key reduction, frame evaluator conversion, deterministic flicker, runtime interpolation, seek-back, and gobo events.
+- Level 2 component integration: `MfvVRSLFixtureChannel.EvaluateQue`, `MfvVRSLFixtureApplier.Apply`, and missing `vrslFixture` detection.
+- Level 3 real Timeline preview: opens `PreviewSmoke.unity`, evaluates a real SLM `StageLightTimelineTrack`, and verifies channel plus VRSL fixture fields.
+- Level 4 bake consistency: bakes the same PreviewSmoke Timeline, validates baked arrays/upload Timeline, and compares baked runtime playback against real preview values.
+
+The same EditMode assembly is used by the local CLI script and Unity Test Runner: `ManeuverForVRSL.EditorTests`.

@@ -62,7 +62,7 @@ namespace ManeuverForVRSL
             if (intensityProperty != null)
             {
                 var t = GetNormalizedTimeSafe(currentTime, queueData, typeof(LightIntensityProperty), index);
-                state.intensity += intensityProperty.lightToggleDimmer.value.Evaluate(t) * weight;
+                state.intensity += intensityProperty.lightToggleIntensity.value.Evaluate(t) * weight;
             }
 
             var flickerProperty = queueData.TryGetActiveProperty<LightFlickerProperty>();

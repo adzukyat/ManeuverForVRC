@@ -61,8 +61,8 @@ namespace ManeuverForVRSL.Tests
         private static LightIntensityProperty CreateIntensity(float value)
         {
             var property = new LightIntensityProperty();
-            property.lightToggleDimmer.value.mode = AnimationMode.Constant;
-            property.lightToggleDimmer.value.constant = value;
+            property.lightToggleIntensity.value.mode = AnimationMode.Constant;
+            property.lightToggleIntensity.value.constant = value;
             return property;
         }
 

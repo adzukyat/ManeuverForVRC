@@ -107,9 +107,14 @@ namespace ManeuverForVRSL.Editor
                 var hasMfvChannel = false;
                 foreach (var channel in channels)
                 {
-                    if (channel is MfvVRSLFixtureChannel)
+                    if (channel is MfvVRSLFixtureChannel mfvChannel)
                     {
                         hasMfvChannel = true;
+                        mfvChannel.Init();
+                        if (mfvChannel.vrslFixture == null)
+                        {
+                            errors.Add($"Fixture '{fixture.name}' has MfvVRSLFixtureChannel but no VRStageLighting_DMX_Static target. Assign vrslFixture or place the VRSL fixture under the channel object.");
+                        }
                     }
                     else if (channel != null)
                     {

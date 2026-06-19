@@ -17,6 +17,7 @@ namespace ManeuverForVRSL
         public MfvVRSLFrame lastFrame = MfvVRSLFrame.Default();
 
         private readonly List<StageLightQueueData> _queueBuffer = new List<StageLightQueueData>();
+        private bool _reportedMissingFixture;
 
         public override void Init()
         {
@@ -55,7 +56,13 @@ namespace ManeuverForVRSL
 
         public override void UpdateChannel()
         {
-            MfvVRSLFixtureApplier.Apply(vrslFixture, lastFrame);
+            if (!MfvVRSLFixtureApplier.TryApply(vrslFixture, lastFrame) && !_reportedMissingFixture)
+            {
+                Debug.LogError(
+                    $"Fixture '{name}' has MfvVRSLFixtureChannel but no VRStageLighting_DMX_Static target. Assign vrslFixture or place the VRSL fixture under the channel object.",
+                    this);
+                _reportedMissingFixture = true;
+            }
         }
 
         private void Start()

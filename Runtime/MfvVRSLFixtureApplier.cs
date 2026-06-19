@@ -7,9 +7,14 @@ namespace ManeuverForVRSL
     {
         public static void Apply(VRStageLighting_DMX_Static fixture, MfvVRSLFrame frame)
         {
+            TryApply(fixture, frame);
+        }
+
+        public static bool TryApply(VRStageLighting_DMX_Static fixture, MfvVRSLFrame frame)
+        {
             if (fixture == null)
             {
-                return;
+                return false;
             }
 
             fixture.enableDMXChannels = false;
@@ -27,6 +32,7 @@ namespace ManeuverForVRSL
             }
 
             fixture._UpdateInstancedProperties();
+            return true;
         }
     }
 }
