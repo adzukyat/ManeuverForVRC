@@ -11,8 +11,10 @@ namespace ManeuverForVRSL
 {
 #if UDONSHARP
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
+    [AddComponentMenu("Maneuver For VRSL/MFV VRSL Timeline Player")]
     public class MfvVRSLTimelinePlayer : UdonSharpBehaviour
 #else
+    [AddComponentMenu("Maneuver For VRSL/MFV VRSL Timeline Player")]
     public class MfvVRSLTimelinePlayer : MonoBehaviour
 #endif
     {

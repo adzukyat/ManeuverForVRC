@@ -28,6 +28,10 @@ On each VRSL-controlled fixture object, or on a nearby control object, add:
 - `StageLightFixture`
 - `MfvVRSLFixtureChannel`
 
+`MfvVRSLFixtureChannel` appears in Unity's Add Component menu as:
+
+`Maneuver For VRSL > MFV VRSL Fixture Channel`
+
 Assign the target `VRStageLighting_DMX_Static` component to `MfvVRSLFixtureChannel.vrslFixture`.
 
 If the field is left empty, the channel tries to find a `VRStageLighting_DMX_Static` in children, but explicit assignment is recommended.

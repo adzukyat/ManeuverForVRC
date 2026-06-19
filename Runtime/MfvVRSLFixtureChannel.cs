@@ -7,7 +7,7 @@ using VRSL;
 namespace ManeuverForVRSL
 {
     [ExecuteAlways]
-    [AddComponentMenu("")]
+    [AddComponentMenu("Maneuver For VRSL/MFV VRSL Fixture Channel")]
     public class MfvVRSLFixtureChannel : StageLightChannelBase
     {
         [ChannelField(true, false)]
