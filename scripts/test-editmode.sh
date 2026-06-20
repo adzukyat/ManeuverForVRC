@@ -9,6 +9,7 @@ EDITOR_LOG="${RESULTS_DIR}/editor.log"
 
 mkdir -p "${RESULTS_DIR}"
 
+"${ROOT_DIR}/scripts/check-package-metadata.sh"
 "${ROOT_DIR}/scripts/bootstrap-test-project.sh"
 
 find_unity() {
