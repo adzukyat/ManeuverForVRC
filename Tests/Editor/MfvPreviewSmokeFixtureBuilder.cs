@@ -23,7 +23,9 @@ namespace ManeuverForVRC.Tests
         public const string TimelinePath = FolderPath + "/PreviewSmoke.playable";
         public const float PreviewTime = 1f;
         public const float ExpectedPan = 30f;
+        public const float ExpectedVrslPan = -ExpectedPan;
         public const float ExpectedTilt = 60f;
+        public const float ExpectedVrslTilt = ExpectedTilt + MfvVRSLTiltUtility.DefaultVrslTiltOffset;
         public const float ExpectedIntensity = 0.7f;
         public const float ExpectedConeWidth = 2.75f;
         public const float ExpectedConeLength = 5.25f;

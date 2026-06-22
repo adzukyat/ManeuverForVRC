@@ -19,8 +19,8 @@ namespace ManeuverForVRC
 
             fixture.enableDMXChannels = false;
             fixture.enableStrobe = false;
-            fixture.panOffsetBlueGreen = frame.pan;
-            fixture.tiltOffsetBlue = frame.tilt;
+            fixture.panOffsetBlueGreen = MfvVRSLPanUtility.ToVrslPanOffset(frame.pan);
+            fixture.tiltOffsetBlue = MfvVRSLTiltUtility.ToVrslTiltOffset(frame.tilt);
             fixture.globalIntensity = Mathf.Clamp01(frame.intensity);
             fixture.lightColorTint = frame.color;
             fixture.coneWidth = Mathf.Clamp(frame.coneWidth, 0f, 5.5f);

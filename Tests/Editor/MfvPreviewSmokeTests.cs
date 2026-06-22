@@ -38,8 +38,8 @@ namespace ManeuverForVRC.Tests
             Assert.That(context.Channel.lastFrame.pan, Is.EqualTo(MfvPreviewSmokeFixtureBuilder.ExpectedPan).Within(0.0001f), diagnostics);
             Assert.That(context.Channel.lastFrame.tilt, Is.EqualTo(MfvPreviewSmokeFixtureBuilder.ExpectedTilt).Within(0.0001f), diagnostics);
             Assert.That(context.Channel.lastFrame.intensity, Is.EqualTo(MfvPreviewSmokeFixtureBuilder.ExpectedIntensity).Within(0.0001f), diagnostics);
-            Assert.That(sample.After.Pan, Is.EqualTo(MfvPreviewSmokeFixtureBuilder.ExpectedPan).Within(0.0001f), diagnostics);
-            Assert.That(sample.After.Tilt, Is.EqualTo(MfvPreviewSmokeFixtureBuilder.ExpectedTilt).Within(0.0001f), diagnostics);
+            Assert.That(sample.After.Pan, Is.EqualTo(MfvPreviewSmokeFixtureBuilder.ExpectedVrslPan).Within(0.0001f), diagnostics);
+            Assert.That(sample.After.Tilt, Is.EqualTo(MfvPreviewSmokeFixtureBuilder.ExpectedVrslTilt).Within(0.0001f), diagnostics);
             Assert.That(sample.After.Intensity, Is.EqualTo(MfvPreviewSmokeFixtureBuilder.ExpectedIntensity).Within(0.0001f), diagnostics);
             Assert.That(sample.After.Color.r, Is.EqualTo(MfvPreviewSmokeFixtureBuilder.ExpectedColor.r).Within(0.0001f), diagnostics);
             Assert.That(sample.After.Color.g, Is.EqualTo(MfvPreviewSmokeFixtureBuilder.ExpectedColor.g).Within(0.0001f), diagnostics);
@@ -190,8 +190,8 @@ namespace ManeuverForVRC.Tests
                 Assert.IsNull(slmClip.StageLightQueueData.TryGetActiveProperty<ManualLightArrayProperty>());
                 Assert.IsNull(slmClip.StageLightQueueData.TryGetActiveProperty<ManualColorArrayProperty>());
                 Assert.IsNull(slmClip.StageLightQueueData.TryGetActiveProperty<ManualPanTiltProperty>());
-                Assert.That(channel.lastFrame.pan, Is.EqualTo(12f).Within(0.0001f));
-                Assert.That(channel.lastFrame.tilt, Is.EqualTo(34f).Within(0.0001f));
+                Assert.That(channel.lastFrame.pan, Is.EqualTo(-12f).Within(0.0001f));
+                Assert.That(channel.lastFrame.tilt, Is.EqualTo(-56f).Within(0.0001f));
                 Assert.That(channel.lastFrame.intensity, Is.EqualTo(0.65f).Within(0.0001f));
                 Assert.That(channel.lastFrame.color.r, Is.EqualTo(0.2f).Within(0.0001f));
                 Assert.That(channel.lastFrame.color.g, Is.EqualTo(0.4f).Within(0.0001f));

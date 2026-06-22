@@ -147,7 +147,7 @@ namespace ManeuverForVRC
             var pan = FindProperty<PanProperty>(stageLightQueueData);
             if (pan != null)
             {
-                EnsureMinMax(ref pan.rollTransform, vrslFixture.panOffsetBlueGreen);
+                EnsureMinMax(ref pan.rollTransform, MfvVRSLPanUtility.ToSlmPan(vrslFixture.panOffsetBlueGreen));
                 pan.propertyOverride = true;
                 pan.rollTransform.propertyOverride = true;
             }
@@ -155,7 +155,7 @@ namespace ManeuverForVRC
             var tilt = FindProperty<TiltProperty>(stageLightQueueData);
             if (tilt != null)
             {
-                EnsureMinMax(ref tilt.rollTransform, vrslFixture.tiltOffsetBlue);
+                EnsureMinMax(ref tilt.rollTransform, MfvVRSLTiltUtility.ToSlmTilt(vrslFixture.tiltOffsetBlue));
                 tilt.propertyOverride = true;
                 tilt.rollTransform.propertyOverride = true;
             }
@@ -239,8 +239,8 @@ namespace ManeuverForVRC
                 EnsureListSize(panTilt.positions.value, Mathf.Max(fixtureIndex + 1, fixtureCount), () => new PanTiltPrimitive());
                 var value = panTilt.positions.value[fixtureIndex] ?? new PanTiltPrimitive();
                 value.name = GetFixtureName();
-                value.pan = vrslFixture.panOffsetBlueGreen;
-                value.tilt = vrslFixture.tiltOffsetBlue;
+                value.pan = MfvVRSLPanUtility.ToSlmPan(vrslFixture.panOffsetBlueGreen);
+                value.tilt = MfvVRSLTiltUtility.ToSlmTilt(vrslFixture.tiltOffsetBlue);
                 panTilt.positions.value[fixtureIndex] = value;
                 panTilt.propertyOverride = true;
                 panTilt.positions.propertyOverride = true;

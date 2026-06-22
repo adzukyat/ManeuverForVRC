@@ -18,6 +18,8 @@ namespace ManeuverForVRC
     public class MfvVRSLTimelinePlayer : MonoBehaviour
 #endif
     {
+        private const float DefaultVrslTiltOffset = 90f;
+
         public PlayableDirector director;
         public VRStageLighting_DMX_Static[] fixtures = new VRStageLighting_DMX_Static[0];
 
@@ -235,11 +237,11 @@ namespace ManeuverForVRC
 
             if (propertyId == MfvVRSLPropertyId.Pan)
             {
-                fixture.panOffsetBlueGreen = value;
+                fixture.panOffsetBlueGreen = -value;
             }
             else if (propertyId == MfvVRSLPropertyId.Tilt)
             {
-                fixture.tiltOffsetBlue = value;
+                fixture.tiltOffsetBlue = value + DefaultVrslTiltOffset;
             }
             else if (propertyId == MfvVRSLPropertyId.Intensity)
             {

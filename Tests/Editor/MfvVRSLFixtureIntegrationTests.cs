@@ -67,8 +67,8 @@ namespace ManeuverForVRC.Tests
                 });
 
                 Assert.IsTrue(applied);
-                Assert.That(fixture.panOffsetBlueGreen, Is.EqualTo(12f).Within(0.0001f));
-                Assert.That(fixture.tiltOffsetBlue, Is.EqualTo(34f).Within(0.0001f));
+                Assert.That(fixture.panOffsetBlueGreen, Is.EqualTo(-12f).Within(0.0001f));
+                Assert.That(fixture.tiltOffsetBlue, Is.EqualTo(124f).Within(0.0001f));
                 Assert.That(fixture.globalIntensity, Is.EqualTo(0.6f).Within(0.0001f));
                 Assert.That(fixture.lightColorTint, Is.EqualTo(Color.green));
                 Assert.That(fixture.coneWidth, Is.EqualTo(2f).Within(0.0001f));
@@ -76,6 +76,30 @@ namespace ManeuverForVRC.Tests
                 Assert.That(fixture.selectGOBO, Is.EqualTo(5));
                 Assert.IsFalse(fixture.enableDMXChannels);
                 Assert.IsFalse(fixture.enableStrobe);
+            }
+            finally
+            {
+                Object.DestroyImmediate(fixtureObject);
+            }
+        }
+
+        [Test]
+        public void Apply_MapsSlmTiltZeroToVrslDefaultTiltOffset()
+        {
+            var fixtureObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            try
+            {
+                var fixture = fixtureObject.AddComponent<VRStageLighting_DMX_Static>();
+                fixture.objRenderers = new[] { fixtureObject.GetComponent<MeshRenderer>() };
+
+                var applied = MfvVRSLFixtureApplier.TryApply(fixture, new MfvVRSLFrame
+                {
+                    tilt = 0f
+                });
+
+                Assert.IsTrue(applied);
+                Assert.That(fixture.tiltOffsetBlue, Is.EqualTo(90f).Within(0.0001f),
+                    "SLM Tilt 0 should land on VRSL's default vertical tilt offset.");
             }
             finally
             {
@@ -127,14 +151,14 @@ namespace ManeuverForVRC.Tests
                 Assert.That(light.spotAngle.value.constant, Is.EqualTo(72f).Within(0.0001f));
                 Assert.That(light.range.value.constant, Is.EqualTo(68.42105f).Within(0.0001f));
                 Assert.That(color.lightToggleColor.value.Evaluate(0f), Is.EqualTo(vrslFixture.lightColorTint));
-                Assert.That(pan.rollTransform.value.constant, Is.EqualTo(12f).Within(0.0001f));
-                Assert.That(tilt.rollTransform.value.constant, Is.EqualTo(34f).Within(0.0001f));
+                Assert.That(pan.rollTransform.value.constant, Is.EqualTo(-12f).Within(0.0001f));
+                Assert.That(tilt.rollTransform.value.constant, Is.EqualTo(-56f).Within(0.0001f));
                 Assert.That(gobo.goboIndex.value, Is.EqualTo(6));
 
                 var frame = MfvVRSLFrameEvaluator.Evaluate(new[] { queueData }, stageFixture, 0f);
 
-                Assert.That(frame.pan, Is.EqualTo(12f).Within(0.0001f));
-                Assert.That(frame.tilt, Is.EqualTo(34f).Within(0.0001f));
+                Assert.That(frame.pan, Is.EqualTo(-12f).Within(0.0001f));
+                Assert.That(frame.tilt, Is.EqualTo(-56f).Within(0.0001f));
                 Assert.That(frame.intensity, Is.EqualTo(0.65f).Within(0.0001f));
                 Assert.That(frame.color.r, Is.EqualTo(0.2f).Within(0.0001f));
                 Assert.That(frame.color.g, Is.EqualTo(0.4f).Within(0.0001f));
