@@ -1,5 +1,7 @@
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using ManeuverForVRC.Editor;
 using NUnit.Framework;
 using StageLightManeuver;
@@ -303,6 +305,66 @@ namespace ManeuverForVRC.Tests
                 Object.DestroyImmediate(timeline);
                 Object.DestroyImmediate(directorObject);
                 Object.DestroyImmediate(fixtureObject);
+            }
+        }
+
+        [Test]
+        public void Level3_StageLightPropertiesDrawer_OrderedViewKeepsSerializedPropertyMapping()
+        {
+            var timeline = ScriptableObject.CreateInstance<TimelineAsset>();
+            try
+            {
+                var track = timeline.CreateTrack<StageLightTimelineTrack>(null, "SLM Drawer Mapping");
+                var clip = track.CreateClip<StageLightTimelineClip>();
+                var slmClip = (StageLightTimelineClip)clip.asset;
+                var properties = new List<SlmProperty>
+                {
+                    new ClockProperty(),
+                    new StageLightOrderProperty(),
+                    new LightIntensityProperty(),
+                    new LightColorProperty(),
+                    new LightProperty()
+                };
+                slmClip.behaviour.stageLightQueueData.stageLightProperties = properties;
+
+                using var serializedObject = new SerializedObject(slmClip);
+                var serializedProperties = serializedObject
+                    .FindProperty("behaviour")
+                    .FindPropertyRelative("stageLightQueueData")
+                    .FindPropertyRelative("stageLightProperties");
+
+                var drawerType = typeof(StageLightPropertiesDrawer);
+                var createOrderedView = drawerType.GetMethod(
+                    "CreateOrderedPropertyView",
+                    BindingFlags.NonPublic | BindingFlags.Static);
+                var getArrayElementForPropertyInstance = drawerType.GetMethod(
+                    "GetArrayElementForPropertyInstance",
+                    BindingFlags.NonPublic | BindingFlags.Static);
+                Assert.NotNull(createOrderedView);
+                Assert.NotNull(getArrayElementForPropertyInstance);
+
+                var orderedView = (List<SlmProperty>)createOrderedView.Invoke(null, new object[] { properties });
+                var lightProperty = orderedView.OfType<LightProperty>().Single();
+                var serializedLightProperty = (SerializedProperty)getArrayElementForPropertyInstance.Invoke(
+                    null,
+                    new object[] { serializedProperties, properties, lightProperty });
+
+                Assert.That(properties.Select(stageLightProperty => stageLightProperty.GetType()), Is.EqualTo(new[]
+                {
+                    typeof(ClockProperty),
+                    typeof(StageLightOrderProperty),
+                    typeof(LightIntensityProperty),
+                    typeof(LightColorProperty),
+                    typeof(LightProperty)
+                }));
+                Assert.NotNull(serializedLightProperty);
+                Assert.That(
+                    serializedLightProperty.FindPropertyRelative("propertyName").stringValue,
+                    Is.EqualTo("Light"));
+            }
+            finally
+            {
+                Object.DestroyImmediate(timeline);
             }
         }
 

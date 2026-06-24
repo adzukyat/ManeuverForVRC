@@ -16,7 +16,6 @@ namespace StageLightManeuver
     public class StageLightPropertiesDrawer : SlmBaseDrawer
     {
         private static readonly List<Type> ClipProperty = new List<Type> { typeof(ClockProperty), typeof(StageLightOrderProperty) };
-        bool isInitialized = false;
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             if (property == null)
@@ -31,11 +30,7 @@ namespace StageLightManeuver
             }
 
             stageLightProperties.RemoveAll(x => x == null);
-            if (isInitialized == false)
-            {
-                stageLightProperties = SlmEditorSettingsUtility.SortByPropertyOrder(stageLightProperties);
-                isInitialized = true;
-            }
+            var orderedStageLightProperties = CreateOrderedPropertyView(stageLightProperties);
 
             // ClipProperty に含まれるプロパティは先頭に描画
             EditorGUI.indentLevel--;
@@ -65,13 +60,13 @@ namespace StageLightManeuver
             EditorGUILayout.HelpBox("StageLightProperties", MessageType.None);
             EditorGUI.indentLevel++;
 
-            for (int i = 0; i < stageLightProperties.Count; i++)
+            for (int i = 0; i < orderedStageLightProperties.Count; i++)
             {
-                var slmProperty = stageLightProperties[i];
+                var slmProperty = orderedStageLightProperties[i];
                 if (slmProperty == null || ClipProperty.Contains(slmProperty.GetType())) continue;
 
                 // EditorGUI.BeginDisabledGroup(slmProperty.isEditable == false);
-                var serializedSlmProperty = GetArrayElementAtIndexSafe(property, i);
+                var serializedSlmProperty = GetArrayElementForPropertyInstance(property, stageLightProperties, slmProperty);
                 if (serializedSlmProperty == null)
                 {
                     continue;
@@ -122,12 +117,13 @@ namespace StageLightManeuver
             }
 
             stageLightProperties.RemoveAll(x => x == null);
+            var orderedStageLightProperties = CreateOrderedPropertyView(stageLightProperties);
 
-            for (int i = 0; i < stageLightProperties.Count; i++)
+            for (int i = 0; i < orderedStageLightProperties.Count; i++)
             {
-                var slmProperty = stageLightProperties[i];
+                var slmProperty = orderedStageLightProperties[i];
                 if (slmProperty == null) continue;
-                var serializedSlmProperty = GetArrayElementAtIndexSafe(property, i);
+                var serializedSlmProperty = GetArrayElementForPropertyInstance(property, stageLightProperties, slmProperty);
                 if (serializedSlmProperty == null) continue;
                 height += EditorGUI.GetPropertyHeight(serializedSlmProperty);
                 height += EditorGUIUtility.singleLineHeight;
@@ -142,6 +138,20 @@ namespace StageLightManeuver
             Type propertyType)
         {
             var index = stageLightProperties.FindIndex(x => x != null && x.GetType() == propertyType);
+            return GetArrayElementAtIndexSafe(arrayProperty, index);
+        }
+
+        private static List<SlmProperty> CreateOrderedPropertyView(List<SlmProperty> stageLightProperties)
+        {
+            return SlmEditorSettingsUtility.SortByPropertyOrder(new List<SlmProperty>(stageLightProperties));
+        }
+
+        private static SerializedProperty GetArrayElementForPropertyInstance(
+            SerializedProperty arrayProperty,
+            List<SlmProperty> stageLightProperties,
+            SlmProperty targetProperty)
+        {
+            var index = stageLightProperties.IndexOf(targetProperty);
             return GetArrayElementAtIndexSafe(arrayProperty, index);
         }
 
